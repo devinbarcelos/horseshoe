@@ -33,11 +33,9 @@ vecVORR = [0 valSPAN/2 0];
 vecSEMIVORR = [0 valSPAN/2 0];
 vecSEMIVORL = [0 -valSPAN/2 0];
 
-valPOINTS = 25;
+valPOINTS = 25; % Number of points to calculate
 
 % Points of interest: [x1,y1,z1;x2,y2,z2;..;xn,yn,xn]
-% Y = linspace(-3*valSPAN/2,3*valSPAN/2,valPOINTS);
-% Z = linspace(-valSPAN,valSPAN,valPOINTS);
 [Y,Z] = meshgrid(linspace(-3*valSPAN/2,3*valSPAN/2,valPOINTS),linspace(-valSPAN,valSPAN,valPOINTS));
 Y = reshape(Y,[valPOINTS^2,1]);
 Z = reshape(Z,[1,valPOINTS^2])';
@@ -63,4 +61,20 @@ valGAMMA = (valMASS*9.81)/(valDENSITY*valUINF*valSPAN);
 matQ = matQL + matQR + matQS;
 
 %% Plot The Induced Velocity Distribution
-quiver(Y,Z,matQ(:,2),matQ(:,3))
+% Quiver plot of induced velocities calculated
+figure(1)
+clf(1)
+hold on
+scale_factor = 2; % Adjust size of arrows
+quiver(Y,Z,matQ(:,2).*scale_factor,matQ(:,3).*scale_factor, 'AutoScale','off')
+axis equal
+axis tight
+title('Induced Velocities Downstream of Aircraft Wing')
+xlabel('Span-wise distance (m)')
+ylabel('z-direction (m)')
+hold off
+
+%% Find the downwash at the center span
+valCENTER  = ceil(size(matQ, 1)./2);
+s = sprintf('Downwash at center span: %.4f m/s in z-direction', matQ(valCENTER, 3));
+disp(s);
