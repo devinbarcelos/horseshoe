@@ -33,8 +33,16 @@ vecVORR = [0 valSPAN/2 0];
 vecSEMIVORR = [0 valSPAN/2 0];
 vecSEMIVORL = [0 -valSPAN/2 0];
 
+valPOINTS = 25;
+
 % Points of interest: [x1,y1,z1;x2,y2,z2;..;xn,yn,xn]
-matP = [valSPAN 0 0; 10 10.7143 1.0204;10 0.9184 10;10 0.9184 10]; 
+% Y = linspace(-3*valSPAN/2,3*valSPAN/2,valPOINTS);
+% Z = linspace(-valSPAN,valSPAN,valPOINTS);
+[Y,Z] = meshgrid(linspace(-3*valSPAN/2,3*valSPAN/2,valPOINTS),linspace(-valSPAN,valSPAN,valPOINTS));
+Y = reshape(Y,[valPOINTS^2,1]);
+Z = reshape(Z,[1,valPOINTS^2])';
+%matP = [valSPAN 0 0; 10 10.7143 1.0204;10 0.9184 10;10 0.9184 10]; 
+matP = [repmat(valSPAN,[valPOINTS^2,1]),Y,Z];
 
 %% Begin Vortex Lattice method calculations
 % Calculate circulation from lift (from aircraft weight)
@@ -55,3 +63,4 @@ valGAMMA = (valMASS*9.81)/(valDENSITY*valUINF*valSPAN);
 matQ = matQL + matQR + matQS;
 
 %% Plot The Induced Velocity Distribution
+quiver(Y,Z,matQ(:,2),matQ(:,3))
